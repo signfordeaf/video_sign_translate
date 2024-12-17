@@ -1,39 +1,86 @@
-<!--
-This README describes the package. If you publish this package to pub.dev,
-this README's contents appear on the landing page for your package.
+# WeAccess Video Sign Translate
 
-For information about how to write a good package README, see the guide for
-[writing package pages](https://dart.dev/tools/pub/writing-package-pages).
-
-For general information about developing packages, see the Dart guide for
-[creating packages](https://dart.dev/guides/libraries/create-packages)
-and the Flutter guide for
-[developing packages and plugins](https://flutter.dev/to/develop-packages).
--->
-
-TODO: Put a short description of the package here that helps potential users
-know whether this package might be useful for them.
-
-## Features
-
-TODO: List what your package can do. Maybe include images, gifs, or videos.
-
-## Getting started
-
-TODO: List prerequisites and provide or point to information on how to
-start using the package.
-
-## Usage
-
-TODO: Include short and useful examples for package users. Add longer examples
-to `/example` folder.
-
+## 🛠️ Install
 ```dart
-const like = 'sample';
+flutter pub add video_sign_translate
+```
+###  📄main.dart
+```dart
+void main() async {
+  await VideoSignTranslate.init(apiKey: 'YOUR-API-KEY');
+  runApp(const MyApp());
+}
 ```
 
-## Additional information
 
-TODO: Tell users more about the package: where to find more information, how to
-contribute to the package, how to file issues, what response they can expect
-from the package authors, and more.
+## 🧑🏻💻 Usage
+
+### 🚀 Widget and Controller
+
+```dart 
+VideoSignController _signController;
+
+VideoSignPlayer(
+   controller: _signController,
+   videoPlayerController: _controller,
+   child: AspectRatio(
+      aspectRatio: _controller.value.aspectRatio,
+      child: VideoPlayer(_controller),
+      ),
+),
+```
+###  📄example.dart
+   Wrap the video player with VideoSignPlayer
+```dart
+class MyHomePage extends StatefulWidget {
+  const MyHomePage({super.key, required this.title});
+
+  final String title;
+
+  @override
+  State<MyHomePage> createState() => _MyHomePageState();
+}
+
+class _MyHomePageState extends State<MyHomePage> {
+  late VideoPlayerController _controller;
+  late VideoSignController _signController;
+
+  @override
+  void initState() {
+    super.initState();
+    _controller = VideoPlayerController.networkUrl(
+        Uri.parse('https://flutter.github.io/assets-for-api-docs/assets/videos/butterfly.mp4'))
+      ..initialize().then((_) {
+        setState(() {
+          _controller.play();
+        });
+      });
+    _signController = VideoSignController();
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return Scaffold(
+      appBar: AppBar(
+        backgroundColor: Theme.of(context).colorScheme.inversePrimary,
+        title: Text(widget.title),
+      ),
+      body: Center(
+        child: Column(
+          mainAxisAlignment: MainAxisAlignment.center,
+          children: <Widget>[
+            VideoSignPlayer(
+              controller: _signController,
+              videoPlayerController: _controller,
+              child: AspectRatio(
+                aspectRatio: _controller.value.aspectRatio,
+                child: VideoPlayer(_controller),
+              ),
+            ),
+          ],
+        ),
+      ),
+    );
+  }
+}
+```
